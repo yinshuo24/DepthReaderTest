@@ -1,0 +1,73 @@
+<! DOCTYPE HTML>
+<html>
+	<head>
+		<title>Depth Reader Test</title>
+		<script type="text/javascript" src="lib/rsvp.js"></script>
+		<script type="text/javascript" src="lib/depth-reader.js"></script>
+		<script type="text/javascript" src="lib/baseToArrayBuffer.js"></script>
+		<script type="text/javascript" src="lib/decoder.js"></script>
+	</head>
+
+	<body>
+		<h1>Depth Reader Test</h1>
+		<div>
+			<canvas id="reference"></canvas><b>next</b>
+		</div>
+		<div>
+			<canvas id="depth"></canvas><b></b>
+		<div>
+		<script tyep="text/javascript">
+			var fileUrl = 'http://10.239.47.10/Programs/RealSense/DepthReaderTest/Flowers.jpg';
+			var originImage = new Image();
+			originImage.src = fileUrl;
+			document.body.appendChild(originImage);
+		    new DepthReader().loadFile(fileUrl)
+			.then(function(reader)
+			{
+			    var containerImage = new Image(),
+				referenceImage = new Image(),
+				 depthmapImage = new Image(),
+			       confidenceImage = new Image();
+
+			    // the container image (depth.jpg)
+			    // may contain user applied edits
+			    containerImage.src = reader.fileData;
+			    console.log(reader.fileData);
+			    
+
+			    referenceImage.src = reader.image.data;
+			    handleCanvas(document.getElementById("reference"), referenceImage);
+			    console.log('Reference image dimensions:',
+				referenceImage.width + 'x' +
+				referenceImage.height);
+
+			    if (reader.isXDM) {
+				// normalize depth values between 1-255
+				// and shift them by 64 to boost effect
+				reader.normalizeDepthmap(64);
+			    }
+			    depthmapImage.src = reader.depth.data;
+			    handleCanvas(document.getElementById("depth"), depthmapImage);
+			    console.log('Depthmap  image dimensions:',
+				depthmapImage.width + 'x' +
+				depthmapImage.height);
+			    var byteArray = baseToArrayBuffer(depthmapImage.src.substring(23));
+			    var imagedata = decode(byteArray);
+			    console.log("image width image height: ", imagedata.width, imagedata.height);
+			    console.log(imagedata.data.length);
+
+			    console.log(reader.confidence.data);
+			    if (reader.confidence.data) {
+				// confidence map may not be available,
+				// but should be same size as depthmap
+				
+				confidenceImage.src = reader.confidence.data;
+			    }
+			})
+			.catch(function(error) {
+			    console.error('loading failed:', error);
+			});
+		</script>
+	</body>
+</html>
+	
