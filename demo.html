@@ -1,4 +1,4 @@
-<! DOCTYPE HTML>
+
 <html>
 	<head>
 		<title>Depth Reader Test</title>
@@ -17,7 +17,7 @@
 			<canvas id="depth"></canvas><b></b>
 		<div>
 		<script tyep="text/javascript">
-			var fileUrl = 'http://10.239.47.10/Programs/RealSense/DepthReaderTest/Flowers.jpg';
+			var fileUrl = 'http://localhost/Programs/RealSense/DepthReaderTest/Flowers.jpg';
 			var originImage = new Image();
 			originImage.src = fileUrl;
 			document.body.appendChild(originImage);
@@ -51,10 +51,6 @@
 			    console.log('Depthmap  image dimensions:',
 				depthmapImage.width + 'x' +
 				depthmapImage.height);
-			    var byteArray = baseToArrayBuffer(depthmapImage.src.substring(23));
-			    var imagedata = decode(byteArray);
-			    console.log("image width image height: ", imagedata.width, imagedata.height);
-			    console.log(imagedata.data.length);
 
 			    console.log(reader.confidence.data);
 			    if (reader.confidence.data) {
